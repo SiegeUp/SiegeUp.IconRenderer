@@ -1,0 +1,16 @@
+{
+    "name": "SiegeUp.IconRenderer.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:90dec6e50d6025a40b0389454ef4b134"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
