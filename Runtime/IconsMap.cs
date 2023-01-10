@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
@@ -22,16 +22,14 @@ namespace SiegeUp.IconRenderer
         List<PrefabIconInfo> runtimeIcons = new List<PrefabIconInfo>();
 
         public string IconsPath => iconsPath;
-        public IconRenderConfig DefaultRenderConfig => defaultRenderConfig;
         public static IconsMap Instance { get; private set; }
-        public IEnumerable<PrefabIconInfo> RuntimeIcons => runtimeIcons;
 
         IconsMap()
         {
             Instance = this;
         }
 
-        private void Awake()
+        void Awake()
         {
             Instance = this;
         }

@@ -5,7 +5,7 @@ using UnityEditor;
 using System.Linq;
 using System.IO;
 
-namespace SiegeUp.IconRenderer
+namespace SiegeUp.IconRenderer.Editor
 {
     public class IconRenderingTool : EditorWindow
     {
@@ -43,7 +43,7 @@ namespace SiegeUp.IconRenderer
             EditorUtility.SetDirty(IconRenderingSettings.Instance.IconsMap);
         }
 
-        private void OnGUI()
+        void OnGUI()
         {
             var selectedObjects = Selection.GetFiltered<GameObject>(SelectionMode.Assets | SelectionMode.TopLevel);
             GUILayout.BeginArea(new Rect(0, 0, position.width, position.height));
@@ -61,7 +61,7 @@ namespace SiegeUp.IconRenderer
                     GUILayout.Label("Render config: " + iconInfo.renderConfig.name);
                     GUILayout.Label("Rotation: " + iconInfo.renderConfig.Rotation);
 
-                    var renderConfigEditor = Editor.CreateEditor(iconInfo.renderConfig);
+                    var renderConfigEditor = UnityEditor.Editor.CreateEditor(iconInfo.renderConfig);
                     renderConfigEditor.OnInspectorGUI();
                 }
                 else

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-namespace SiegeUp.IconRenderer
+namespace SiegeUp.IconRenderer.Editor
 {
     [CreateAssetMenu(menuName = "SiegeUp.IconRenderer/Mesh Icon Renderer")]
     public class MeshIconRenderer : BaseIconRenderer

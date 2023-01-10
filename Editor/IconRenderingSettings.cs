@@ -4,7 +4,7 @@ using UnityEngine;
 using System.Linq;
 using UnityEditor;
 
-namespace SiegeUp.IconRenderer
+namespace SiegeUp.IconRenderer.Editor
 {
 	[CreateAssetMenu(menuName = "SiegeUp.IconRenderer/IconRenderingSettings")]
 	public class IconRenderingSettings : ScriptableObject
@@ -28,13 +28,13 @@ namespace SiegeUp.IconRenderer
 		public IconsMap IconsMap => iconsMap;
 		public float FOV => fov;
 
-		private void OnEnable()
+        void OnEnable()
 		{
 			Instance = this;
 		}
 
 		[InitializeOnLoadMethod]
-		private static void FindInstance()
+        static void FindInstance()
 		{
 			string[] assets = AssetDatabase.FindAssets($"t:{nameof(IconRenderingSettings)}");
 			if (assets.Length > 0)

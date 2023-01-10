@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.Playables;
 
-namespace SiegeUp.IconRenderer
+namespace SiegeUp.IconRenderer.Editor
 {
     [CreateAssetMenu(menuName = "SiegeUp.IconRenderer/Skinned Mesh Icon Renderer")]
     public class SkinnedMeshIconRenderer : BaseIconRenderer
