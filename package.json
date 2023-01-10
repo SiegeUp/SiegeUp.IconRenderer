@@ -1,6 +1,6 @@
 {
   "name": "com.siegeup.iconrenderer",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "displayName": "SiegeUp.IconRenderer",
   "description": "Universal extendable icons renderer for items and objects in editor mode.",
   "unity": "2019.4",
