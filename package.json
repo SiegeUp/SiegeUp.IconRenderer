@@ -4,5 +4,6 @@
   "displayName": "SiegeUp.IconRenderer",
   "description": "Universal extendable icons renderer for items and objects in editor mode.",
   "unity": "2019.4",
-  "license": "Abuksigun SiegeUp"
+  "license": "Abuksigun SiegeUp",
+  "type": "visible"
 }
