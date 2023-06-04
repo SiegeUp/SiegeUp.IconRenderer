@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace SiegeUp.IconRenderer
 {
-    [CreateAssetMenu]
+    [CreateAssetMenu(menuName = "SiegeUp.IconRenderer/IconRenderConfig")]
     public class IconRenderConfig : ScriptableObject
     {
         [SerializeField]

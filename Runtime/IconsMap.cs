@@ -6,7 +6,7 @@ using System.Linq;
 namespace SiegeUp.IconRenderer
 {
     [ExecuteInEditMode]
-    [CreateAssetMenu]
+    [CreateAssetMenu(menuName = "SiegeUp.IconRenderer/IconsMap")]
     public class IconsMap : ScriptableObject
     {
         [SerializeField]
