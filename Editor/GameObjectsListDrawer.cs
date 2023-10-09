@@ -2,11 +2,10 @@
 using UnityEngine;
 
 [CustomPropertyDrawer(typeof(GameObjectsListAttribute))]
-public class PrefabRefListDrawer : PropertyDrawer
+public class GameObjectsListDrawer : PropertyDrawer
 {
     public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
     {
-        // Properly configure height for expanded contents.
         return EditorGUI.GetPropertyHeight(property, label, property.isExpanded);
     }
 
