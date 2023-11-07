@@ -61,7 +61,10 @@ namespace SiegeUp.IconRenderer
             if (prefabIconInfo == null)
             {
                 prefabIconInfo = new PrefabIconInfo { prefabRef = prefabRef, texture2d = null, renderConfig = defaultRenderConfig };
-                runtimeIcons.Add(prefabIconInfo);
+                if (!Application.isPlaying)
+                {
+                    iconsMap.Add(prefabIconInfo);
+                }
             }
             return prefabIconInfo;
         }
