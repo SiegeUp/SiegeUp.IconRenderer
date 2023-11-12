@@ -41,6 +41,7 @@ namespace SiegeUp.IconRenderer.Editor
             IconRenderingSettings.Instance.IconsMap.GetPrefabIconInfo(obj).texture2d = iconAsset;
 
             EditorUtility.SetDirty(IconRenderingSettings.Instance.IconsMap);
+            AssetDatabase.SaveAssetIfDirty(IconRenderingSettings.Instance.IconsMap);
         }
 
         void OnGUI()
