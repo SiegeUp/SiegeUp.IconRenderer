@@ -20,7 +20,7 @@ namespace SiegeUp.IconRenderer.Editor
                 {
                     if (System.Array.IndexOf(ignoreLayers, skinnedMeshRenderer.gameObject.layer) != -1)
                         continue;
-                    var matrix = Matrix4x4.TRS(Vector3.zero, Quaternion.Euler(iconInfo.renderConfig.Rotation), Vector3.one * 0.3f);
+                    var matrix = Matrix4x4.TRS(iconInfo.renderConfig.Position, Quaternion.Euler(iconInfo.renderConfig.Rotation), iconInfo.renderConfig.Scale * 0.3f);
                     var positionOffset = Matrix4x4.Translate(-objectRoot.transform.position);
 
                     if (!materialMap.TryGetValue(skinnedMeshRenderer, out var material))

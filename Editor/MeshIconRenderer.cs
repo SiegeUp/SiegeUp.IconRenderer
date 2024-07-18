@@ -29,8 +29,8 @@ namespace SiegeUp.IconRenderer.Editor
                                 material = meshRenderer.sharedMaterials[materialIndex];
                             var tweakedMaterial = iconInfo.renderConfig.GetMaterialReplacement(material);
 
-                            var matrix = Matrix4x4.TRS(Vector3.zero, Quaternion.Euler(iconInfo.renderConfig.Rotation), Vector3.one * 0.3f);
-                            var positionOffset = Matrix4x4.Translate(-objectRoot.transform.position);
+                            var matrix = Matrix4x4.TRS(iconInfo.renderConfig.Position, Quaternion.Euler(iconInfo.renderConfig.Rotation), iconInfo.renderConfig.Scale * 0.3f);
+                            var positionOffset = Matrix4x4.Translate(-iconInfo.renderConfig.Position);
                             preview.DrawMesh(meshFilter.sharedMesh, matrix * positionOffset * meshFilter.transform.localToWorldMatrix, tweakedMaterial, i);
                         }
                     }

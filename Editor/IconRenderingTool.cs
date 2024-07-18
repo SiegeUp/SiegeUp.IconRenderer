@@ -60,7 +60,9 @@ namespace SiegeUp.IconRenderer.Editor
                 {
                     GUILayout.Label("Size: " + iconInfo.texture2d.width + "x" + iconInfo.texture2d.height);
                     GUILayout.Label("Render config: " + iconInfo.renderConfig.name);
+                    GUILayout.Label("Position: " + iconInfo.renderConfig.Position);
                     GUILayout.Label("Rotation: " + iconInfo.renderConfig.Rotation);
+                    GUILayout.Label("Scale: " + iconInfo.renderConfig.Scale);
 
                     var renderConfigEditor = UnityEditor.Editor.CreateEditor(iconInfo.renderConfig);
                     renderConfigEditor.OnInspectorGUI();

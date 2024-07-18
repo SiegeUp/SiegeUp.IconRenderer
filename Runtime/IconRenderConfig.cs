@@ -8,7 +8,13 @@ namespace SiegeUp.IconRenderer
     public class IconRenderConfig : ScriptableObject
     {
         [SerializeField]
+        Vector3 position;
+
+        [SerializeField]
         Vector3 rotation;
+
+        [SerializeField]
+        Vector3 scale;
 
         [SerializeField]
         Color lightColor = Color.white;
@@ -25,15 +31,13 @@ namespace SiegeUp.IconRenderer
         [SerializeField]
         Vector2Int size = new Vector2Int(256, 256);
 
+        public Vector3 Position => position;
         public Vector3 Rotation => rotation;
+        public Vector3 Scale => scale;
         public Vector2Int Size => size;
-
         public Color LightColor => lightColor;
-        
         public float LightIntencity => lightIntencity;
-
         public float Padding => padding;
-
         public Vector2 Offset => offset;
 
         [System.Serializable]
