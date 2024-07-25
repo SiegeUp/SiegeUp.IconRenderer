@@ -14,7 +14,7 @@ namespace SiegeUp.IconRenderer
         Vector3 rotation;
 
         [SerializeField]
-        Vector3 scale;
+        Vector3 scale = Vector3.one;
 
         [SerializeField]
         Color lightColor = Color.white;
