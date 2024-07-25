@@ -23,6 +23,7 @@ namespace SiegeUp.IconRenderer
 
         public string IconsPath => iconsPath;
         public static IconsMap Instance { get; private set; }
+        public List<PrefabIconInfo> IconsMapObjects => iconsMap;
 
         IconsMap()
         {
