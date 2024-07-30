@@ -15,7 +15,7 @@ namespace SiegeUp.IconRenderer
         [SerializeField]
         IconRenderConfig defaultRenderConfig;
 
-        [SerializeField, GameObjectsList]
+        [SerializeField]
         List<PrefabIconInfo> iconsMap = new List<PrefabIconInfo>();
 
         [SerializeField]
