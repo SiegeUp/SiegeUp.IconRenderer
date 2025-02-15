@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
@@ -11,7 +11,6 @@ namespace SiegeUp.IconRenderer.Editor
     {
         PreviewRenderUtility preview;
 
-        Texture2D finalIcon;
         Vector2 scrollPosition;
 
         Material transparencyPostProcess;
@@ -20,6 +19,9 @@ namespace SiegeUp.IconRenderer.Editor
         const int iconSize = 1024;
         Rect iconRenderRect = new Rect(0, 0, iconSize, iconSize);
 
+        Dictionary<string, Texture2D> cachedIconsMap = new();
+        GameObject[] oldSelectedobjects;
+        
         [MenuItem("Window/Icon Renderer")]
         public static void ShowWindow()
         {
@@ -46,7 +48,14 @@ namespace SiegeUp.IconRenderer.Editor
 
         void OnGUI()
         {
+            bool selectionChaged = false;
             var selectedObjects = Selection.GetFiltered<GameObject>(SelectionMode.Assets | SelectionMode.TopLevel);
+            if (oldSelectedobjects == null || !selectedObjects.SequenceEqual(oldSelectedobjects))
+            {
+                selectionChaged = true;
+                oldSelectedobjects = selectedObjects;   
+            }
+
             GUILayout.BeginArea(new Rect(0, 0, position.width, position.height));
             scrollPosition = GUILayout.BeginScrollView(scrollPosition);
 
@@ -74,19 +83,37 @@ namespace SiegeUp.IconRenderer.Editor
                 }
 
                 GUILayout.BeginHorizontal();
+
                 if (iconInfo != null && iconInfo.texture2d)
                     GUILayout.Label(iconInfo.texture2d, labelOptions);
 
-                var newIcon = RenderIcon(selectedObject);
-                GUILayout.Label(newIcon, labelOptions);
+                cachedIconsMap.TryGetValue(selectedObject.name, out Texture2D cachedTexture);
+
+                if (cachedTexture == null || iconInfo.renderConfig.NeedToUpdate)
+                {
+                    cachedIconsMap[selectedObject.name] = RenderIcon(selectedObject);
+                    iconInfo.renderConfig.NeedToUpdate = false;
+                }
+
+                GUILayout.Label(cachedIconsMap[selectedObject.name], labelOptions);
+
                 GUILayout.EndHorizontal();
                 if (GUILayout.Button("Save"))
-                    SaveIcon(selectedObject, newIcon);
+                {
+                    SaveIcon(selectedObject, cachedIconsMap[selectedObject.name]);
+                }
             }
+
+            if (GUILayout.Button("Save all"))
+            {
+                foreach (var selectedObject in selectedObjects)
+                    SaveIcon(selectedObject, cachedIconsMap[selectedObject.name]);
+            }
+
             GUILayout.EndScrollView();
             GUILayout.EndArea();
         }
-        
+
         RectOffset FindBounds(Texture2D tex)
         {
             const int step = 4;
@@ -150,8 +177,7 @@ namespace SiegeUp.IconRenderer.Editor
             transparencyPostProcess.SetTexture("_WhiteBgTex", whiteBgIcon);
             Graphics.Blit(blackBgIcon, transparentIconRT, transparencyPostProcess, 0);
 
-            if (!finalIcon)
-                finalIcon = new Texture2D(iconInfo.renderConfig.Size.x, iconInfo.renderConfig.Size.y);
+            var finalIcon = new Texture2D(iconInfo.renderConfig.Size.x, iconInfo.renderConfig.Size.y);
 
             RenderTexture.active = transparentIconRT;
             finalIcon.ReadPixels(new Rect(0, 0, finalIcon.width, finalIcon.height), 0, 0);
@@ -209,8 +235,8 @@ namespace SiegeUp.IconRenderer.Editor
                 DestroyImmediate(transparentIconRT);
             if (transparencyPostProcess)
                 DestroyImmediate(transparencyPostProcess);
-            if (finalIcon)
-                DestroyImmediate(finalIcon);
+            //if (finalIcon)
+            //    DestroyImmediate(finalIcon);
         }
     }
 }

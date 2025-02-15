@@ -40,6 +40,8 @@ namespace SiegeUp.IconRenderer
         public float Padding => padding;
         public Vector2 Offset => offset;
 
+        public bool NeedToUpdate { get; set; }
+
         [System.Serializable]
         public struct MaterialReplacement
         {
@@ -53,6 +55,11 @@ namespace SiegeUp.IconRenderer
         {
             var replacementIndex = System.Array.FindIndex(materialReplacements, i => i.sourceMaterial == sourceMaterial);
             return replacementIndex != -1 ? materialReplacements[replacementIndex].replacementMaterial : sourceMaterial;
+        }
+
+        void OnValidate()
+        {
+            NeedToUpdate = true;
         }
     }
 }
