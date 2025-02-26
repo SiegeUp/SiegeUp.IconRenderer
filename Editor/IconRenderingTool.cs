@@ -31,16 +31,25 @@ namespace SiegeUp.IconRenderer.Editor
         void SaveIcon(GameObject obj, Texture2D icon)
         {
             AssetDatabase.TryGetGUIDAndLocalFileIdentifier(obj, out string guid, out long _);
-            string path = Path.Join(IconRenderingSettings.Instance.IconsMap.IconsPath, $"/icon_{ guid }.png");
+            string path = Path.Join(IconRenderingSettings.Instance.IconsMap.IconsPath, $"/icon_{guid}.png");
 
             byte[] bytes = icon.EncodeToPNG();
-
             UnityEngine.Windows.File.WriteAllBytes(Path.Join(Application.dataPath, path), bytes);
 
-            AssetDatabase.ImportAsset(Path.Join("Assets/", path), ImportAssetOptions.ForceSynchronousImport);
-            var iconAsset = AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/" + path);
+            string assetPath = Path.Join("Assets/", path);
+            AssetDatabase.ImportAsset(assetPath, ImportAssetOptions.ForceSynchronousImport);
 
-            IconRenderingSettings.Instance.IconsMap.GetPrefabIconInfo(obj).texture2d = iconAsset;
+            TextureImporter textureImporter = AssetImporter.GetAtPath(assetPath) as TextureImporter;
+            if (textureImporter != null)
+            {
+                textureImporter.textureType = TextureImporterType.Sprite;
+                textureImporter.spriteImportMode = SpriteImportMode.Single;
+                textureImporter.SaveAndReimport();
+            }
+
+            Sprite spriteAsset = AssetDatabase.LoadAssetAtPath<Sprite>(assetPath);
+
+            IconRenderingSettings.Instance.IconsMap.GetPrefabIconInfo(obj).sprite = spriteAsset;
 
             EditorUtility.SetDirty(IconRenderingSettings.Instance.IconsMap);
             AssetDatabase.SaveAssetIfDirty(IconRenderingSettings.Instance.IconsMap);
@@ -65,9 +74,9 @@ namespace SiegeUp.IconRenderer.Editor
                 var iconInfo = IconsMap.Instance.GetPrefabIconInfo(selectedObject);
                 GUILayoutOption[] labelOptions = { GUILayout.Width(100), GUILayout.Height(100) };
 
-                if (iconInfo != null && iconInfo.texture2d && iconInfo.renderConfig)
+                if (iconInfo != null && iconInfo.sprite && iconInfo.renderConfig)
                 {
-                    GUILayout.Label("Size: " + iconInfo.texture2d.width + "x" + iconInfo.texture2d.height);
+                    GUILayout.Label("Size: " + iconInfo.sprite.texture.width + "x" + iconInfo.sprite.texture.height);
                     GUILayout.Label("Render config: " + iconInfo.renderConfig.name);
                     GUILayout.Label("Position: " + iconInfo.renderConfig.Position);
                     GUILayout.Label("Rotation: " + iconInfo.renderConfig.Rotation);
@@ -84,8 +93,8 @@ namespace SiegeUp.IconRenderer.Editor
 
                 GUILayout.BeginHorizontal();
 
-                if (iconInfo != null && iconInfo.texture2d)
-                    GUILayout.Label(iconInfo.texture2d, labelOptions);
+                if (iconInfo != null && iconInfo.sprite)
+                    GUILayout.Label(iconInfo.sprite.texture, labelOptions);
 
                 cachedIconsMap.TryGetValue(selectedObject.name, out Texture2D cachedTexture);
 
