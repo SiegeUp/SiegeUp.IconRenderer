@@ -203,7 +203,7 @@ namespace SiegeUp.IconRenderer.Editor
             preview.camera.clearFlags = CameraClearFlags.Color;
             preview.camera.fieldOfView = IconRenderingSettings.Instance.FOV;
 
-            var materialMap = IconRenderingSettings.Instance.MaterialMapper.GetMaterialMap(gameObject);
+            var materialMap = IconRenderingSettings.Instance.MaterialMapper ? IconRenderingSettings.Instance.MaterialMapper.GetMaterialMap(gameObject) : new Dictionary<Component, Material>();
 
             preview.BeginStaticPreview(iconRenderRect);
 
