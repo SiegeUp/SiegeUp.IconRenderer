@@ -25,12 +25,11 @@ namespace SiegeUp.IconRenderer.Editor
 
                     if (!materialMap.TryGetValue(skinnedMeshRenderer, out var material))
                         material = skinnedMeshRenderer.sharedMaterials[0];
-                    var tweakedMaterial = renderConfig.GetMaterialReplacement(material);
+                    var tweakedMaterial = factionMask ? renderConfig.GetFactionMaskMaterial(material) : renderConfig.GetMaterialReplacement(material);
 
-                    if (!tmpMeshes.TryGetValue(skinnedMeshRenderer, out var tmpMesh))
-                        tmpMeshes[skinnedMeshRenderer] = tmpMesh = new Mesh();
-                    skinnedMeshRenderer.BakeMesh(tmpMesh, true);
-                    preview.DrawMesh(tmpMesh, matrix * positionOffset * skinnedMeshRenderer.transform.localToWorldMatrix, tweakedMaterial, 0);
+                    var mesh = new Mesh();
+                    skinnedMeshRenderer.BakeMesh(mesh, true);
+                    preview.DrawMesh(mesh, matrix * positionOffset * skinnedMeshRenderer.transform.localToWorldMatrix, tweakedMaterial, 0);
                 }
             }
             catch (System.Exception e)

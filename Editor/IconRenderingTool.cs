@@ -200,7 +200,7 @@ namespace SiegeUp.IconRenderer.Editor
             if (factionMask != null)
             {
                 var maskSprite = SaveTextureAsSprite(factionMask, IconRenderingSettings.Instance.IconsMap.IconsPath, $"icon_{guid}_mask.png");
-                TryAssignMaskSprite(iconInfo, maskSprite);
+                iconInfo.factionMaskSprite = maskSprite;
             }
 
             if (renderConfig)
@@ -225,24 +225,11 @@ namespace SiegeUp.IconRenderer.Editor
                 ti.spriteImportMode = SpriteImportMode.Single;
                 ti.alphaIsTransparency = true;
                 ti.filterMode = FilterMode.Bilinear;
+                ti.maxTextureSize = 128;
                 ti.SaveAndReimport();
             }
 
             return AssetDatabase.LoadAssetAtPath<Sprite>(assetPath);
-        }
-
-        static void TryAssignMaskSprite(object iconInfo, Sprite maskSprite)
-        {
-            var t = iconInfo.GetType();
-            var prop = t.GetProperty("factionMaskSprite");
-            if (prop != null && prop.PropertyType == typeof(Sprite))
-            {
-                prop.SetValue(iconInfo, maskSprite, null);
-                return;
-            }
-            var field = t.GetField("factionMaskSprite");
-            if (field != null && field.FieldType == typeof(Sprite))
-                field.SetValue(iconInfo, maskSprite);
         }
 
         // === Render pipeline ===

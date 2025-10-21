@@ -27,7 +27,7 @@ namespace SiegeUp.IconRenderer.Editor
                             int materialIndex = Mathf.Min(i, meshRenderer.sharedMaterials.Length - 1);
                             if (!materialMap.TryGetValue(meshRenderer, out var material))
                                 material = meshRenderer.sharedMaterials[materialIndex];
-                            var tweakedMaterial = renderConfig.GetMaterialReplacement(material);
+                            var tweakedMaterial = factionMask ? renderConfig.GetFactionMaskMaterial(material) : renderConfig.GetMaterialReplacement(material);
 
                             var matrix = Matrix4x4.TRS(renderConfig.Position, Quaternion.Euler(renderConfig.Rotation), renderConfig.Scale);
                             var positionOffset = Matrix4x4.Translate(-renderConfig.Position);

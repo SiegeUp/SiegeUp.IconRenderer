@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 namespace SiegeUp.IconRenderer
@@ -42,6 +43,7 @@ namespace SiegeUp.IconRenderer
         public int ClipIndex => clipIndex;
         public int FrameIndex => frameIndex;
         public int SSAA => sSAA;    
+        
 
         public bool NeedToUpdate { get; set; }
 
