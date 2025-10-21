@@ -50,6 +50,7 @@ namespace SiegeUp.IconRenderer
         {
             public Material sourceMaterial;
             public Material replacementMaterial;
+            public Material factionMaskMaterial;
         }
 
         public MaterialReplacement[] materialReplacements;
@@ -58,6 +59,12 @@ namespace SiegeUp.IconRenderer
         {
             var replacementIndex = System.Array.FindIndex(materialReplacements, i => i.sourceMaterial == sourceMaterial);
             return replacementIndex != -1 ? materialReplacements[replacementIndex].replacementMaterial : sourceMaterial;
+        }
+
+        public Material GetFactionMaskMaterial(Material sourceMaterial)
+        {
+            var replacementIndex = System.Array.FindIndex(materialReplacements, i => i.sourceMaterial == sourceMaterial);
+            return replacementIndex != -1 ? materialReplacements[replacementIndex].factionMaskMaterial : sourceMaterial;
         }
 
         void OnValidate()

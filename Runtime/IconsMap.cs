@@ -40,6 +40,7 @@ namespace SiegeUp.IconRenderer
             public GameObject prefabRef;
 
             public Sprite sprite;
+            public Sprite factionMaskSprite;
             public IconRenderConfig renderConfig;
         }
 

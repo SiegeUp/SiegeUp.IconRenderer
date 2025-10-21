@@ -11,7 +11,7 @@ namespace SiegeUp.IconRenderer.Editor
         int[] ignoreLayers;
         Dictionary<SkinnedMeshRenderer, Mesh> tmpMeshes = new Dictionary<SkinnedMeshRenderer, Mesh>();
 
-        public override void Render(IconRenderConfig renderConfig, GameObject objectRoot, PreviewRenderUtility preview, Dictionary<Component, Material> materialMap)
+        public override void Render(IconRenderConfig renderConfig, GameObject objectRoot, PreviewRenderUtility preview, Dictionary<Component, Material> materialMap, bool factionMask)
         {
             try
             {

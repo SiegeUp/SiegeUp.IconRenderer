@@ -7,6 +7,6 @@ namespace SiegeUp.IconRenderer.Editor
 {
     public abstract class BaseIconRenderer : ScriptableObject
     {
-        public abstract void Render(IconRenderConfig renderConfig, GameObject objectRoot, PreviewRenderUtility preview, Dictionary<Component, Material> materialMap);
+        public abstract void Render(IconRenderConfig renderConfig, GameObject objectRoot, PreviewRenderUtility preview, Dictionary<Component, Material> materialMap, bool factionMask);
     }
 }

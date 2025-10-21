@@ -11,7 +11,7 @@ namespace SiegeUp.IconRenderer.Editor
         [SerializeField]
         int[] ignoreLayers;
 
-        public override void Render(IconRenderConfig renderConfig, GameObject objectRoot, PreviewRenderUtility preview, Dictionary<Component, Material> materialMap)
+        public override void Render(IconRenderConfig renderConfig, GameObject objectRoot, PreviewRenderUtility preview, Dictionary<Component, Material> materialMap, bool factionMask)
         {
             foreach (var meshFilter in objectRoot.GetComponentsInChildren<MeshFilter>())
             {
