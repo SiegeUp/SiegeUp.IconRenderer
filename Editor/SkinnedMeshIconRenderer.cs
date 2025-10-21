@@ -11,7 +11,7 @@ namespace SiegeUp.IconRenderer.Editor
         int[] ignoreLayers;
         Dictionary<SkinnedMeshRenderer, Mesh> tmpMeshes = new Dictionary<SkinnedMeshRenderer, Mesh>();
 
-        public override void Render(IconsMap.PrefabIconInfo iconInfo, GameObject objectRoot, PreviewRenderUtility preview, Dictionary<Component, Material> materialMap)
+        public override void Render(IconRenderConfig renderConfig, GameObject objectRoot, PreviewRenderUtility preview, Dictionary<Component, Material> materialMap)
         {
             try
             {
@@ -20,12 +20,12 @@ namespace SiegeUp.IconRenderer.Editor
                 {
                     if (System.Array.IndexOf(ignoreLayers, skinnedMeshRenderer.gameObject.layer) != -1)
                         continue;
-                    var matrix = Matrix4x4.TRS(iconInfo.renderConfig.Position, Quaternion.Euler(iconInfo.renderConfig.Rotation), iconInfo.renderConfig.Scale);
+                    var matrix = Matrix4x4.TRS(renderConfig.Position, Quaternion.Euler(renderConfig.Rotation), renderConfig.Scale);
                     var positionOffset = Matrix4x4.Translate(-objectRoot.transform.position);
 
                     if (!materialMap.TryGetValue(skinnedMeshRenderer, out var material))
                         material = skinnedMeshRenderer.sharedMaterials[0];
-                    var tweakedMaterial = iconInfo.renderConfig.GetMaterialReplacement(material);
+                    var tweakedMaterial = renderConfig.GetMaterialReplacement(material);
 
                     if (!tmpMeshes.TryGetValue(skinnedMeshRenderer, out var tmpMesh))
                         tmpMeshes[skinnedMeshRenderer] = tmpMesh = new Mesh();

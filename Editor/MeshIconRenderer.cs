@@ -11,7 +11,7 @@ namespace SiegeUp.IconRenderer.Editor
         [SerializeField]
         int[] ignoreLayers;
 
-        public override void Render(IconsMap.PrefabIconInfo iconInfo, GameObject objectRoot, PreviewRenderUtility preview, Dictionary<Component, Material> materialMap)
+        public override void Render(IconRenderConfig renderConfig, GameObject objectRoot, PreviewRenderUtility preview, Dictionary<Component, Material> materialMap)
         {
             foreach (var meshFilter in objectRoot.GetComponentsInChildren<MeshFilter>())
             {
@@ -27,10 +27,10 @@ namespace SiegeUp.IconRenderer.Editor
                             int materialIndex = Mathf.Min(i, meshRenderer.sharedMaterials.Length - 1);
                             if (!materialMap.TryGetValue(meshRenderer, out var material))
                                 material = meshRenderer.sharedMaterials[materialIndex];
-                            var tweakedMaterial = iconInfo.renderConfig.GetMaterialReplacement(material);
+                            var tweakedMaterial = renderConfig.GetMaterialReplacement(material);
 
-                            var matrix = Matrix4x4.TRS(iconInfo.renderConfig.Position, Quaternion.Euler(iconInfo.renderConfig.Rotation), iconInfo.renderConfig.Scale);
-                            var positionOffset = Matrix4x4.Translate(-iconInfo.renderConfig.Position);
+                            var matrix = Matrix4x4.TRS(renderConfig.Position, Quaternion.Euler(renderConfig.Rotation), renderConfig.Scale);
+                            var positionOffset = Matrix4x4.Translate(-renderConfig.Position);
                             preview.DrawMesh(meshFilter.sharedMesh, matrix * positionOffset * meshFilter.transform.localToWorldMatrix, tweakedMaterial, i);
                         }
                     }
