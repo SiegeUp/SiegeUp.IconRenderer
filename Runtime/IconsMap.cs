@@ -8,19 +8,14 @@ namespace SiegeUp.IconRenderer
     [CreateAssetMenu(menuName = "SiegeUp.IconRenderer/IconsMap")]
     public class IconsMap : ScriptableObject
     {
-        [SerializeField]
-        string iconsPath;
-
-        [SerializeField]
-        IconRenderConfig defaultRenderConfig;
-
-        [SerializeField]
-        List<PrefabIconInfo> iconsMap = new List<PrefabIconInfo>();
-
-        [SerializeField]
-        List<PrefabIconInfo> runtimeIcons = new List<PrefabIconInfo>();
+        [SerializeField] string iconsPath;
+        [SerializeField] string configsPath;
+        [SerializeField] IconRenderConfig defaultRenderConfig;
+        [SerializeField] List<PrefabIconInfo> iconsMap = new List<PrefabIconInfo>();
+        [SerializeField] List<PrefabIconInfo> runtimeIcons = new List<PrefabIconInfo>();
 
         public string IconsPath => iconsPath;
+        public string ConfigsPath => configsPath;
         public static IconsMap Instance { get; private set; }
         public List<PrefabIconInfo> IconsMapObjects => iconsMap;
 

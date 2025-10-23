@@ -25,7 +25,7 @@ namespace SiegeUp.IconRenderer.Editor
 
                     if (!materialMap.TryGetValue(skinnedMeshRenderer, out var material))
                         material = skinnedMeshRenderer.sharedMaterials[0];
-                    var tweakedMaterial = factionMask ? renderConfig.GetFactionMaskMaterial(material) : renderConfig.GetMaterialReplacement(material);
+                    var tweakedMaterial = factionMask ? IconRenderingSettings.Instance.GetFactionMaskMaterial(material) : IconRenderingSettings.Instance.GetMaterialReplacement(material);
 
                     var mesh = new Mesh();
                     skinnedMeshRenderer.BakeMesh(mesh, true);

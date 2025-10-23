@@ -9,19 +9,22 @@ namespace SiegeUp.IconRenderer.Editor
 	[CreateAssetMenu(menuName = "SiegeUp.IconRenderer/IconRenderingSettings")]
 	public class IconRenderingSettings : ScriptableObject
 	{
-		[SerializeField]
-		BaseIconRenderer[] iconRenderers;
+        [System.Serializable]
+        public class MaterialReplacement
+        {
+            public Material sourceMaterial;
+            public Material replacementMaterial;
+            public Material factionMaskMaterial;
+        }
 
-		[SerializeField]
-		BaseMaterialMapper materialMapper;
+        [SerializeField] BaseIconRenderer[] iconRenderers;
+		[SerializeField] BaseMaterialMapper materialMapper;
+		[SerializeField] IconsMap iconsMap;
+		[SerializeField] float fov = 30;
+        [SerializeField] int sSAA;
+        [SerializeField] List<MaterialReplacement> materialReplacements;
 
-		[SerializeField]
-		IconsMap iconsMap;
-
-		[SerializeField]
-		float fov = 30;
-
-		public static IconRenderingSettings Instance { get; private set; }
+        public static IconRenderingSettings Instance { get; private set; }
 
 		public IEnumerable<BaseIconRenderer> IconRenderers => iconRenderers.Where(i => i);
 		public BaseMaterialMapper MaterialMapper => materialMapper;
@@ -47,5 +50,17 @@ namespace SiegeUp.IconRenderer.Editor
 				Debug.LogError($"In order to use Icons Renderer, create asset {nameof(IconRenderingSettings)}");
 			}
 		}
-	}
+
+        public Material GetMaterialReplacement(Material sourceMaterial)
+        {
+            var replacement = materialReplacements.FirstOrDefault(i => i.sourceMaterial == sourceMaterial);
+            return replacement != null ? replacement.replacementMaterial : sourceMaterial;
+        }
+
+        public Material GetFactionMaskMaterial(Material sourceMaterial)
+        {
+            var replacement = materialReplacements.FirstOrDefault(i => i.sourceMaterial == sourceMaterial);
+            return replacement != null ? replacement.factionMaskMaterial : sourceMaterial;
+        }
+    }
 }

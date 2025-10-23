@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
@@ -27,6 +28,7 @@ namespace SiegeUp.IconRenderer
         [SerializeField] int clipIndex;
         [SerializeField] int frameIndex;
         [SerializeField] int sSAA;
+        [SerializeField] bool includeFactionMask = true;
 
         public Vector3 Position => position;
         public Vector3 Rotation => rotation;
@@ -43,31 +45,8 @@ namespace SiegeUp.IconRenderer
         public int ClipIndex => clipIndex;
         public int FrameIndex => frameIndex;
         public int SSAA => sSAA;    
-        
-
+        public bool IncludeFactionMask => includeFactionMask;    
         public bool NeedToUpdate { get; set; }
-
-        [System.Serializable]
-        public struct MaterialReplacement
-        {
-            public Material sourceMaterial;
-            public Material replacementMaterial;
-            public Material factionMaskMaterial;
-        }
-
-        public MaterialReplacement[] materialReplacements;
-
-        public Material GetMaterialReplacement(Material sourceMaterial)
-        {
-            var replacementIndex = System.Array.FindIndex(materialReplacements, i => i.sourceMaterial == sourceMaterial);
-            return replacementIndex != -1 ? materialReplacements[replacementIndex].replacementMaterial : sourceMaterial;
-        }
-
-        public Material GetFactionMaskMaterial(Material sourceMaterial)
-        {
-            var replacementIndex = System.Array.FindIndex(materialReplacements, i => i.sourceMaterial == sourceMaterial);
-            return replacementIndex != -1 ? materialReplacements[replacementIndex].factionMaskMaterial : sourceMaterial;
-        }
 
         void OnValidate()
         {

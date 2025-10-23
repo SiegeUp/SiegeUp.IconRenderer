@@ -26,6 +26,7 @@ namespace SiegeUp.IconRenderer.Editor
         [MenuItem("Window/Icon Renderer")]
         public static void ShowWindow() => GetWindow(typeof(IconRenderingTool));
 
+
         void OnEnable()
         {
             preview = new PreviewRenderUtility();
@@ -38,62 +39,121 @@ namespace SiegeUp.IconRenderer.Editor
             cam.transform.LookAt(Vector3.zero);
             cam.allowHDR = false;
             cam.allowMSAA = true;
+
+            Selection.selectionChanged += OnSelectionChanged;
         }
 
         void OnDisable()
         {
+            Selection.selectionChanged -= OnSelectionChanged;
+
             preview.Cleanup();
             if (transparentIconRT) DestroyImmediate(transparentIconRT);
             if (transparencyPostProcess) DestroyImmediate(transparencyPostProcess);
+        }
+
+        void OnFocus()
+        {
+            var selected = Selection.GetFiltered<GameObject>(SelectionMode.Assets | SelectionMode.TopLevel);
+            ForceRerenderFor(selected);
+        }
+
+        void OnSelectionChanged()
+        {
+            var selected = Selection.GetFiltered<GameObject>(SelectionMode.Assets | SelectionMode.TopLevel);
+            ForceRerenderFor(selected);
+            oldSelectedObjects = null;
+            Repaint();
+        }
+
+        void ForceRerenderFor(IEnumerable<GameObject> gos)
+        {
+            bool touched = false;
+            foreach (var go in gos)
+            {
+                if (!go) continue;
+                DropCacheFor(go.name);
+                if (currentRenderConfigMap.TryGetValue(go.name, out var cfg) && cfg)
+                {
+                    cfg.NeedToUpdate = true;
+                    touched = true;
+                }
+            }
+            if (touched) Repaint();
         }
 
         void OnGUI()
         {
             var selectedObjects = Selection.GetFiltered<GameObject>(SelectionMode.Assets | SelectionMode.TopLevel);
             if (oldSelectedObjects == null || !selectedObjects.SequenceEqual(oldSelectedObjects))
+            {
+                ForceRerenderFor(selectedObjects);
                 oldSelectedObjects = selectedObjects;
+            }
 
             GUILayout.BeginArea(new Rect(0, 0, position.width, position.height));
             scrollPosition = GUILayout.BeginScrollView(scrollPosition);
 
-            foreach (var go in selectedObjects)
+            foreach (var selectedObject in selectedObjects)
             {
-                if (!go) 
+                if (!selectedObject)
                     continue;
 
-                var iconInfo = IconsMap.Instance.GetPrefabIconInfo(go);
+                var iconInfo = IconsMap.Instance.GetPrefabIconInfo(selectedObject);
                 var baseConfig = iconInfo != null ? iconInfo.renderConfig : null;
 
-                InitCurrentConfigIfNeeded(go.name, baseConfig);
+                InitCurrentConfigIfNeeded(selectedObject.name, baseConfig);
 
-                var currentConfig = currentRenderConfigMap[go.name];
+                var currentConfig = currentRenderConfigMap[selectedObject.name];
 
-                GUILayout.Label("+ " + go.name, EditorStyles.boldLabel);
+                if (GUILayout.Button("+ " + selectedObject.name, EditorStyles.whiteLargeLabel))
+                {
+                    EditorUtility.FocusProjectWindow();            
+                    Selection.activeObject = selectedObject;       
+                    EditorGUIUtility.PingObject(selectedObject);  
+                }
+
                 DrawInfoBlock(iconInfo, baseConfig, ref currentConfig);
-                currentRenderConfigMap[go.name] = currentConfig;
+                currentRenderConfigMap[selectedObject.name] = currentConfig;
+
+                if (GUILayout.Button("Create new config"))
+                {
+                    CreateNewConfigForGameObject(selectedObject, currentConfig);
+                    currentConfig = currentRenderConfigMap[selectedObject.name];
+                }
 
                 GUILayout.BeginHorizontal();
                 TryDrawSavedIcon(iconInfo);
 
-                var needRegen = NeedRegen(go.name, iconInfo, currentConfig);
+                var needRegen = NeedRegen(selectedObject.name, iconInfo, currentConfig);
                 if (needRegen)
                 {
-                    cachedIconsMap[go.name] = RenderIcon(go, currentConfig, ssaa: false, factionMask: false);
-                    cachedFactionMasksMap[go.name] = RenderIcon(go, currentConfig, ssaa: false, factionMask: true);
+                    cachedIconsMap[selectedObject.name] =
+                        RenderIcon(selectedObject, currentConfig, ssaa: false, factionMask: false);
 
-                    if (currentConfig) 
+                    if (currentConfig != null && currentConfig.IncludeFactionMask)
+                    {
+                        cachedFactionMasksMap[selectedObject.name] =
+                            RenderIcon(selectedObject, currentConfig, ssaa: false, factionMask: true);
+                    }
+                    else
+                    {
+                        cachedFactionMasksMap.Remove(selectedObject.name);
+                    }
+
+                    if (currentConfig)
                         currentConfig.NeedToUpdate = false;
 
-                    if (iconInfo?.renderConfig) 
+                    if (iconInfo?.renderConfig)
                         iconInfo.renderConfig.NeedToUpdate = false;
                 }
 
-                DrawPreviewPair(go.name);
+                DrawPreviewPair(selectedObject.name);
                 GUILayout.EndHorizontal();
 
                 if (GUILayout.Button("Save"))
                 {
-                    SaveWithRerender(go, currentConfig);
+                    SaveWithRerender(selectedObject, currentConfig);
                 }
 
                 GUILayout.Space(8);
@@ -111,6 +171,7 @@ namespace SiegeUp.IconRenderer.Editor
             GUILayout.EndScrollView();
             GUILayout.EndArea();
         }
+
 
         void DrawInfoBlock(IconsMap.PrefabIconInfo iconInfo, IconRenderConfig baseConfig, ref IconRenderConfig currentConfig)
         {
@@ -143,7 +204,7 @@ namespace SiegeUp.IconRenderer.Editor
                 if (newCurrent != currentConfig)
                 {
                     currentConfig = newCurrent ? newCurrent : baseConfig;
-                    if (iconInfo != null) 
+                    if (iconInfo != null)
                         DropCacheFor(iconInfo.prefabRef.name);
                 }
             }
@@ -181,10 +242,19 @@ namespace SiegeUp.IconRenderer.Editor
         void SaveWithRerender(GameObject go, IconRenderConfig currentConfig)
         {
             var iconTexSave = RenderIcon(go, currentConfig, ssaa: true, factionMask: false);
-            var maskTexSave = RenderIcon(go, currentConfig, ssaa: true, factionMask: true);
+
+            Texture2D maskTexSave = null;
+            if (currentConfig != null && currentConfig.IncludeFactionMask)
+            {
+                maskTexSave = RenderIcon(go, currentConfig, ssaa: true, factionMask: true);
+                cachedFactionMasksMap[go.name] = maskTexSave;
+            }
+            else
+            {
+                cachedFactionMasksMap.Remove(go.name);
+            }
 
             cachedIconsMap[go.name] = iconTexSave;
-            cachedFactionMasksMap[go.name] = maskTexSave;
 
             SaveIcon(go, iconTexSave, maskTexSave, currentConfig);
         }
@@ -201,6 +271,11 @@ namespace SiegeUp.IconRenderer.Editor
             {
                 var maskSprite = SaveTextureAsSprite(factionMask, IconRenderingSettings.Instance.IconsMap.IconsPath, $"icon_{guid}_mask.png");
                 iconInfo.factionMaskSprite = maskSprite;
+            }
+
+            if (renderConfig != null && !renderConfig.IncludeFactionMask)
+            {
+                iconInfo.factionMaskSprite = null;
             }
 
             if (renderConfig)
@@ -231,8 +306,6 @@ namespace SiegeUp.IconRenderer.Editor
 
             return AssetDatabase.LoadAssetAtPath<Sprite>(assetPath);
         }
-
-        // === Render pipeline ===
 
         bool NeedRegen(string key, IconsMap.PrefabIconInfo iconInfo, IconRenderConfig cfg)
         {
@@ -381,5 +454,43 @@ namespace SiegeUp.IconRenderer.Editor
             if (!currentRenderConfigMap.ContainsKey(key) || !currentRenderConfigMap[key])
                 currentRenderConfigMap[key] = baseConfig;
         }
+
+        void CreateNewConfigForGameObject(GameObject go, IconRenderConfig source)
+        {
+            if (source == null)
+                source = ScriptableObject.CreateInstance<IconRenderConfig>();
+
+            var clone = Instantiate(source);
+            clone.name = go.name;
+            clone.NeedToUpdate = true;
+
+            string relDir = IconRenderingSettings.Instance.IconsMap.ConfigsPath;
+            string rel = Path.Join(relDir, "/" + go.name + ".asset");
+            string absDir = Path.GetDirectoryName(Path.Join(Application.dataPath, rel));
+            Directory.CreateDirectory(absDir);
+
+            string assetPath = Path.Join("Assets/", rel);
+            assetPath = AssetDatabase.GenerateUniqueAssetPath(assetPath);
+
+            AssetDatabase.CreateAsset(clone, assetPath);
+            AssetDatabase.SaveAssets();
+            AssetDatabase.ImportAsset(assetPath);
+
+            var newConfig = AssetDatabase.LoadAssetAtPath<IconRenderConfig>(assetPath);
+            if (newConfig != null)
+            {
+                newConfig.name = Path.GetFileNameWithoutExtension(assetPath);
+                EditorUtility.SetDirty(newConfig);
+
+                currentRenderConfigMap[go.name] = newConfig;
+
+                DropCacheFor(go.name);
+
+                newConfig.NeedToUpdate = true;
+
+                Repaint();
+            }
+        }
     }
 }
+
