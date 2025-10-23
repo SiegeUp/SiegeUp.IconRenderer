@@ -151,7 +151,7 @@ namespace SiegeUp.IconRenderer.Editor
 
         void TryDrawSavedIcon(IconsMap.PrefabIconInfo iconInfo)
         {
-            if (iconInfo?.sprite?.texture != null)
+            if (iconInfo != null && iconInfo.sprite != null)
             {
                 GUILayoutOption[] labelOptions = { GUILayout.Width(100), GUILayout.Height(100) };
                 GUILayout.Label(iconInfo.sprite.texture, labelOptions);
@@ -331,7 +331,7 @@ namespace SiegeUp.IconRenderer.Editor
 
         RectOffset FindBounds(Texture2D tex)
         {
-            const int step = 4;
+            const int step = 5;
             int W = tex.width, H = tex.height;
 
             int top = H, left = W, bottom = 0, right = 0;
@@ -352,10 +352,10 @@ namespace SiegeUp.IconRenderer.Editor
             }
 
             return new RectOffset(
-                Mathf.Max(0, left - step),
-                Mathf.Min(W, right + step),
-                Mathf.Max(0, top - step),
-                Mathf.Min(H, bottom + step));
+                Mathf.Max(0, left - step * 2),
+                Mathf.Min(W, right + step * 2),
+                Mathf.Max(0, top - step * 2),
+                Mathf.Min(H, bottom + step * 2));
         }
 
         void SetupLight(float l1Intensity, Color l1Color, Vector3 l1Euler,
@@ -365,11 +365,14 @@ namespace SiegeUp.IconRenderer.Editor
             preview.lights[0].intensity = l1Intensity;
             preview.lights[0].color = l1Color;
             preview.lights[0].type = LightType.Directional;
+            preview.lights[0].bounceIntensity = 10;
 
             preview.lights[1].transform.localEulerAngles = l2Euler;
             preview.lights[1].intensity = l2Intensity;
             preview.lights[1].color = l2Color;
             preview.lights[1].type = LightType.Directional;
+            preview.lights[1].bounceIntensity = 10;
+
         }
 
         void InitCurrentConfigIfNeeded(string key, IconRenderConfig baseConfig)
