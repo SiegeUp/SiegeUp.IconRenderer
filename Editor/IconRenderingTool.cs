@@ -394,8 +394,10 @@ namespace SiegeUp.IconRenderer.Editor
 
             if (!transparentIconRT || transparentIconRT.width != width || transparentIconRT.height != height)
             {
-                if (transparentIconRT) DestroyImmediate(transparentIconRT);
-                transparentIconRT = new RenderTexture(width, height, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear) {
+                if (transparentIconRT) 
+                    DestroyImmediate(transparentIconRT);
+
+                transparentIconRT = new RenderTexture(width, height, 32) {
                     filterMode = FilterMode.Bilinear,
                     wrapMode = TextureWrapMode.Clamp
                 };
