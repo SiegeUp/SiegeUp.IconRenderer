@@ -38,7 +38,7 @@ namespace SiegeUp.IconRenderer.Editor
                         if (!materialMap.TryGetValue(meshRenderer, out var baseMat))
                             baseMat = meshRenderer.sharedMaterials[materialIndex];
 
-                        var tweakedMaterial = factionMask ? IconRenderingSettings.Instance.GetFactionMaskMaterial(baseMat) : IconRenderingSettings.Instance.GetMaterialReplacement(baseMat);
+                        var tweakedMaterial = IconRenderingSettings.Instance.GetMaterialReplacement(baseMat, factionMask);
 
                         preview.DrawMesh(mesh, finalMatrix, tweakedMaterial, i);
                     }

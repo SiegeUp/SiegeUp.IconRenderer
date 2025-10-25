@@ -97,9 +97,7 @@ namespace SiegeUp.IconRenderer.Editor
 
                 if (!baseMat) continue;
 
-                var mat = factionMask
-                    ? IconRenderingSettings.Instance.GetFactionMaskMaterial(baseMat)
-                    : IconRenderingSettings.Instance.GetMaterialReplacement(baseMat);
+                var mat = IconRenderingSettings.Instance.GetMaterialReplacement(baseMat, factionMask);
 
                 preview.DrawMesh(mesh, matrix, mat, si);
             }

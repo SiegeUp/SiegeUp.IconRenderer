@@ -51,16 +51,13 @@ namespace SiegeUp.IconRenderer.Editor
 			}
 		}
 
-        public Material GetMaterialReplacement(Material sourceMaterial)
+        public Material GetMaterialReplacement(Material sourceMaterial, bool factionMask)
         {
             var replacement = materialReplacements.FirstOrDefault(i => i.sourceMaterial == sourceMaterial);
-            return replacement != null ? replacement.replacementMaterial : sourceMaterial;
-        }
+            if (replacement == null)
+                return sourceMaterial;
 
-        public Material GetFactionMaskMaterial(Material sourceMaterial)
-        {
-            var replacement = materialReplacements.FirstOrDefault(i => i.sourceMaterial == sourceMaterial);
-            return replacement != null ? replacement.factionMaskMaterial : sourceMaterial;
+            return factionMask ? replacement.factionMaskMaterial : replacement.replacementMaterial;
         }
     }
 }
