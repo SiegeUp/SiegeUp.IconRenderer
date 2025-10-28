@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using UnityEditor;
 
 namespace SiegeUp.IconRenderer
 {
@@ -27,6 +28,23 @@ namespace SiegeUp.IconRenderer
         void Awake()
         {
             Instance = this;
+        }
+
+        [ContextMenu("ClearAllNull")]
+        public void ClearAllNull()
+        {
+            for (int i = iconsMap.Count - 1; i >= 0; i--)
+            {
+                var icon = iconsMap[i];
+                if (icon.prefabRef == null || icon.sprite == null)
+                {
+                    iconsMap.RemoveAt(i);
+                }
+            }
+
+#if UNITY_EDITOR
+            UnityEditor.EditorUtility.SetDirty(this);
+#endif
         }
 
         [System.Serializable]
